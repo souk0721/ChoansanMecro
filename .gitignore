@@ -7825,3 +7825,4 @@ mysite/mysite/__pycache__/__init__.cpython-310.pyc
 mysite/mysite/__pycache__/settings.cpython-310.pyc
 mysite/mysite/__pycache__/urls.cpython-310.pyc
 mysite/mysite/__pycache__/wsgi.cpython-310.pyc
+__pycache__/config.cpython-310.pyc
