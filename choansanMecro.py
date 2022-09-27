@@ -1,5 +1,7 @@
+from email import message
 import time
 import config
+from post_kakao_message import send_kakao_message
 from date_funtion import holyday_retrun
 from datetime import datetime
 from selenium import webdriver
@@ -61,11 +63,14 @@ def reservation(month):
                 
     time.sleep(1)
     table= browser.find_elements(By.XPATH, '//*[@data-old="0"]')
+    message=""
     for i in table:
         data_day=i.get_attribute('data-day')
         if data_day is not None and data_day in holyday_retrun(month):
+        # if data_day is not None :
             ## 예약 가능한 날짜를 클릭한다.
             print(data_day)
+            # message = message + "%s%s" % (data_day, ": 없음\n")
             i.click()
             time.sleep(1)
             ## 파크캠핑 빌리지 구역 라디오 버튼을 클릭한다.
@@ -76,10 +81,13 @@ def reservation(month):
             for j in reserve_locate:
                 if j.get_attribute('disabled') is None and 'P' in j.get_attribute('data-cseq') and 'm_chk' not in j.get_attribute('id'):
                     print(j.get_attribute('data-cseq'))
+                    message = message + data_day + ": " + j.get_attribute('data-cseq') + "\n" 
                     # time.sleep(1)
                     # j.click()
                     # time.sleep(1)
                     # reserve_button = browser.find_element(By.XPATH, '//*[@id="reserved_submit"]').click() 
+    if message != "":
+        send_kakao_message(message)
 
 if __name__ == '__main__':
     site_login()
