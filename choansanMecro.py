@@ -9,6 +9,7 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.relative_locator import locate_with
 from selenium.webdriver.support.wait import WebDriverWait
+from telegram_send_message import telegram_send_message
 
 options = webdriver.ChromeOptions()
 options.add_experimental_option("excludeSwitches", ["enable-automation"])
@@ -87,7 +88,8 @@ def reservation(month):
                     # time.sleep(1)
                     # reserve_button = browser.find_element(By.XPATH, '//*[@id="reserved_submit"]').click() 
     if message != "":
-        send_kakao_message(message)
+        # send_kakao_message(message)
+        telegram_send_message(message)
 
 if __name__ == '__main__':
     site_login()
