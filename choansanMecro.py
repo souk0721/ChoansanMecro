@@ -14,7 +14,9 @@ from telegram_send_message import telegram_send_message
 options = webdriver.ChromeOptions()
 options.add_experimental_option("excludeSwitches", ["enable-automation"])
 options.add_experimental_option("useAutomationExtension", False)
-options.add_experimental_option("detach", False) # 화면이 꺼지지 않고 유지
+# options.add_experimental_option("detach", True) # 화면이 꺼지지 않고 유지
+# options.add_argument("--headless") # 헤드리스 모드 백그라운드 실행
+# options.add_argument("--disable-gpu")
 options.add_experimental_option("excludeSwitches", ["enable-logging"]) # 불필요한 메세지 제거
 options.add_experimental_option("excludeSwitches", ["enable-automation"]) # 자동화 메세지 제거
 service = ChromeService(executable_path="chromedriver.exe")
