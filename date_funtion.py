@@ -19,9 +19,10 @@ def holyday_retrun(month):
     date_retrun = []
     for i in range(start_day-1, end_day+1):
         # print(i)
-        if what_day_is_it(date(current_year, month, i)) == "Fri" \
-            or what_day_is_it(date(current_year, month, i))=='Sat'\
+        if what_day_is_it(date(current_year, month, i)) == "Sat" \
             or what_day_is_it(date(current_year, month, i))=='Sun':
+            # or what_day_is_it(date(current_year, month, i))=='Fri'\
+            # or what_day_is_it(date(current_year, month, i))=='Sun':
             # print(str(date(current_year, month, i)))
             date_retrun.append(str(date(current_year, month, i)))
     return(date_retrun)

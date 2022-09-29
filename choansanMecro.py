@@ -1,6 +1,7 @@
 from email import message
 import time
 import config
+from PIL import Image
 from post_kakao_message import send_kakao_message
 from date_funtion import holyday_retrun
 from datetime import datetime
@@ -10,6 +11,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.relative_locator import locate_with
 from selenium.webdriver.support.wait import WebDriverWait
 from telegram_send_message import telegram_send_message
+from selenium.webdriver.common.keys import Keys
+from ocr import ocr_text
 
 options = webdriver.ChromeOptions()
 options.add_experimental_option("excludeSwitches", ["enable-automation"])
@@ -85,8 +88,48 @@ def reservation(month):
                 if j.get_attribute('disabled') is None and 'P' in j.get_attribute('data-cseq') and 'm_chk' not in j.get_attribute('id'):
                     print(j.get_attribute('data-cseq'))
                     message = message + data_day + ": " + j.get_attribute('data-cseq') + "\n" 
-                    # time.sleep(1)
-                    # j.click()
+                    time.sleep(1)
+                    j.click()
+                    time.sleep(1)
+                    reserve_button = browser.find_element(By.XPATH, '//*[@id="reserved_submit"]').click()
+                    time.sleep(1)
+                    ## 대관확인 yes
+                    browser.switch_to.alert.accept()
+                    time.sleep(1)
+                    ## 자동문자 png 스크린샷 후 저장
+                    auto_str = browser.find_element(By.XPATH, '//*[@id="capt_cnt"]').screenshot_as_png
+                    with open('test.png', 'wb') as file:
+                        file.write(auto_str)
+                    time.sleep(1)
+                    ## 자동문자 OCR 실행
+                    ocrtext = ocr_text('test.png')
+                    time.sleep(1)
+                    ## 자동문자 OCR을 input에 넣어준다.
+                    browser.find_element(By.XPATH, '//*[@id="value"]').send_keys(ocrtext)
+                    time.sleep(1)
+                    ## 전송버튼 클릭
+                    browser.find_element(By.XPATH, '//*[@id="capt_check"]').click()
+                    time.sleep(1)
+                    browser.switch_to.alert.accept()
+                    time.sleep(1)
+                    ## 주의사항 체크박스 클릭
+                    browser.find_element(By.XPATH, '//*[@id="container"]/div[2]/div[2]/div[5]/div/label/i').click()
+                    time.sleep(1)
+                    ## 확인버튼 클릭
+                    browser.find_element(By.XPATH, '//*[@id="paymentSubmit"] ').click()
+                    time.sleep(1)
+                        
+                    ## 이미지를 보여준다    
+                    # screenshot = Image.open('test.png')
+                    # screenshot.show(screenshot)
+                    
+                    
+                    #frm
+                    ### 키보드 엔터키 입력 
+                    # actions = webdriver.ActionChains(browser).send_keys(Keys.ENTER)
+                    break
+                    # actions.perform()
+                    
                     # time.sleep(1)
                     # reserve_button = browser.find_element(By.XPATH, '//*[@id="reserved_submit"]').click() 
     if message != "":
