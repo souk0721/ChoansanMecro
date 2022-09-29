@@ -1,4 +1,5 @@
 from email import message
+import sys
 import time
 import config
 from PIL import Image
@@ -26,6 +27,7 @@ service = ChromeService(executable_path="chromedriver.exe")
 browser = webdriver.Chrome(service=service, options=options)
 browser.get('https://reservation.nowonsc.kr/member/login')
 today_day = datetime.now().day
+reservation_confirm=False
 
 def site_login():
     ## ID 위치
@@ -72,8 +74,8 @@ def reservation(month):
     message=""
     for i in table:
         data_day=i.get_attribute('data-day')
-        if data_day is not None and data_day in holyday_retrun(month):
-        # if data_day is not None :
+        # if data_day is not None and data_day in holyday_retrun(month):
+        if data_day is not None :
             ## 예약 가능한 날짜를 클릭한다.
             print(data_day)
             # message = message + "%s%s" % (data_day, ": 없음\n")
@@ -117,7 +119,19 @@ def reservation(month):
                     time.sleep(1)
                     ## 확인버튼 클릭
                     browser.find_element(By.XPATH, '//*[@id="paymentSubmit"] ').click()
+                    time.sleep(1)              
+                    browser.switch_to.alert.accept()
                     time.sleep(1)
+                    try:
+                        assert '노현석' in browser.find_element(By.XPATH, '//*[@id="container"]/div[2]/div[2]/div[1]/table/tbody/tr/td[1]').text
+                        reservation_confirm = True
+                        telegram_send_message(message)
+                        telegram_send_message("예약후 프로그램 종료 되었습니다.")
+                        sys.exit(0)
+                    except:
+                        browser.get('https://reservation.nowonsc.kr/leisure/camping_date?cate1=2')
+                    time.sleep(1)
+                    # sys.exit(0)
                         
                     ## 이미지를 보여준다    
                     # screenshot = Image.open('test.png')
@@ -127,11 +141,19 @@ def reservation(month):
                     #frm
                     ### 키보드 엔터키 입력 
                     # actions = webdriver.ActionChains(browser).send_keys(Keys.ENTER)
-                    break
+                    
                     # actions.perform()
                     
                     # time.sleep(1)
-                    # reserve_button = browser.find_element(By.XPATH, '//*[@id="reserved_submit"]').click() 
+                        # reserve_button = browser.find_element(By.XPATH, '//*[@id="reserved_submit"]').click() 
+            try:
+                if reservation_confirm:
+                    # browser.get('https://reservation.nowonsc.kr/leisure/camping_date?cate1=2')
+                    # time.sleep(1)
+                    break
+            except:
+                pass
+                
     if message != "":
         # send_kakao_message(message)
         telegram_send_message(message)
@@ -141,8 +163,15 @@ if __name__ == '__main__':
     time.sleep(1)
     
     while True:
-       
+        if reservation_confirm:
+            break
+    
         reservation(datetime.now().month)
         time.sleep(1)
+        if reservation_confirm:
+            break
         reservation(datetime.now().month+1)
         time.sleep(1)
+        if reservation_confirm:
+            break
+        
