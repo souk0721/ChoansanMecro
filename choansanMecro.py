@@ -74,8 +74,8 @@ def reservation(month):
     message=""
     for i in table:
         data_day=i.get_attribute('data-day')
-        # if data_day is not None and data_day in holyday_retrun(month):
-        if data_day is not None :
+        if data_day is not None and data_day in holyday_retrun(month):
+        # if data_day is not None :
             ## 예약 가능한 날짜를 클릭한다.
             print(data_day)
             # message = message + "%s%s" % (data_day, ": 없음\n")
